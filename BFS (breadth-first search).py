@@ -1,23 +1,28 @@
-from collections import deque
+from heapq import *
 
-graph = {'A': ['M', 'P'],
-         'M': ['A', 'N'],
-         'N': ['M', 'B','P'],
-         'P': ['A', 'B','N'],
-         'B': ['P', 'N']}
+graph = {'A': [(2,'M'), (3,'P')],
+         'M': [(2,'A'),(2,'N')],
+         'N': [(2,'M'),(2,'B')],
+         'P': [(3,'A'),(4,'B')],
+         'B': [(4,'P'),(2,'N')]}
 
 def bfs(start, goal, graph):
-    queue=deque([start]) #начальную вершину кладем в очередь
-    visited = {start: None} #словарь посещенных вершин
+    queue=[]
+    heappush(queue,(0,start))
+    cost_visited={start:0}
+    visited={start:None}
     while queue:
-        cur_node=queue.popleft() #достаем из очереди первый элемент
+        cur_cost, cur_node=heappop(queue)
         if cur_node==goal:
             break
         next_nodes=graph[cur_node]
         for i in next_nodes:
-            if i not in visited:
-                queue.append(i)
-                visited[i]=cur_node
+            neigh_cost, neigh_node=i
+            new_cost=cost_visited[cur_node]+neigh_cost
+            if neigh_node not in cost_visited or new_cost < cost_visited[neigh_node]:
+                heappush(queue, (new_cost, neigh_node))
+                cost_visited[neigh_node]=new_cost
+                visited[neigh_node]=cur_node
     return visited
 
 start='A'
