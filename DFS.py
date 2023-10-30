@@ -1,12 +1,11 @@
-from heapq import *
 graph = {'A': [(2,'M'), (3,'P')],
          'M': [(2,'A'),(2,'N')],
          'N': [(2,'M'),(2,'B')],
          'P': [(3,'A'),(4,'B')],
          'B': [(4,'P'),(2,'N')]}
-ans_cost=list()
-ans_path=list()
-def dfs(graph,cur,goal,path,pathcost):
+ans_cost=list() #вес нужных дорог
+ans_path=list() #нужные дороги
+def dfs(graph,cur,goal,path,pathcost): # cur-текущий элемент (start)
     for i in graph[cur]:
         cost, node=i
         if node==goal:
