@@ -1,5 +1,4 @@
-class Solution:
-    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+def asteroidCollision(asteroids):
         s=[]
         for aster in asteroids:
             while aster<0 and s:
@@ -16,3 +15,7 @@ class Solution:
             else:
                 s.append(aster)
         return s
+
+asteroids = [10,2,-5]
+print(asteroids)
+print(asteroidCollision(asteroids))
