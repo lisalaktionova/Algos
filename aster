@@ -1,0 +1,18 @@
+class Solution:
+    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+        s=[]
+        for aster in asteroids:
+            while aster<0 and s:
+                if s[-1]<0: #летят в одну сторону
+                    s.append(aster)
+                    break
+                if s[-1]<abs(aster):
+                    s.pop()
+                elif s[-1]==abs(aster):
+                    s.pop()
+                    break
+                else:
+                    break
+            else:
+                s.append(aster)
+        return s
