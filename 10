@@ -1,0 +1,18 @@
+def min_subarr(mus, goal):
+    n = len(mus)
+    min_sum = float('inf')
+    current_sum = 0 
+    start = 0
+    result = []
+
+    for i in range(n):
+        current_sum += mus[i]
+
+        while current_sum > goal:
+            if current_sum < min_sum:
+                min_sum = current_sum
+                result = mus[start:i+1]
+            current_sum -= mus[start]
+            start += 1
+
+    return result
