@@ -1,0 +1,72 @@
+def sort_str(mas, turning=True):
+    if not mas: # проверка на пустой массив
+        return mas
+
+    max_len = max(len(s) for s in mas) # длина максимальной строки
+    for pos in range(max_len - 1, -1, -1):
+        mas = sort_char(mas, pos, turning)
+
+    return mas
+
+def sort_char(mas, pos, turning): # сортирует массив по конкретному символу (по позиции pos)
+    k = 256
+    count = [0] * k # "массив-счетчик"
+    output = [''] * len(mas) # массив для построения отсортированного массива на текущем этапе
+
+    for i in mas: # ищем кол-во каждого символа на позиции pos
+        if pos < len(i):
+            index = ord(i[pos])
+        else:
+            index = 0
+        count[index] += 1
+
+    # преобразуем count, чтобы он содержал позиции символов в output
+    if turning:
+        for i in range(1, k):
+            count[i] += count[i - 1]
+    else:
+        for i in range(k - 2, -1, -1):
+            count[i] += count[i + 1]
+
+    # собираем массив output
+    for i in reversed(mas):
+        if pos < len(i):
+           index = ord(i[pos]) #ascii элемента строки на позиции pos
+        else:
+           index = 0
+        output[count[index] - 1] = i # ставим строку на место
+        count[index] -= 1
+
+    return output
+
+# Unit tests
+import unittest
+
+class Test(unittest.TestCase):
+
+    def test_empty_array(self):
+        self.assertEqual(sort_str([], turning=True), [])
+        self.assertEqual(sort_str([], turning=False), [])
+
+    def test_single_string(self):
+        self.assertEqual(sort_str(["sleep"], turning=True), ["sleep"])
+        self.assertEqual(sort_str(["sleep"], turning=False), ["sleep"])
+
+    def test_reverse_sorted_array(self):
+        self.assertEqual(sort_str(["work", "sleep", "eat"], turning=True), ["eat", "sleep", "work"])
+        self.assertEqual(sort_str(["work", "eat", "sleep"], turning=False), ["work", "sleep", "eat"])
+
+    def test_mixed_case(self):
+        self.assertEqual(sort_str(["work", "sleep", "eat", "Sleep"], turning=True), ["Sleep", "eat", "sleep", "work"])
+        self.assertEqual(sort_str(["work", "sleep", "eat", "Sleep"], turning=False), ["work", "sleep", "eat", "Sleep"])
+
+    def test_different_lengths(self):
+        self.assertEqual(sort_str(["air", "apple", "actor"], turning=True), ["actor", "air", "apple"])
+        self.assertEqual(sort_str(["air", "apple", "actor"], turning=False), ["apple", "air", "actor"])
+    
+    def test_different_languages(self):
+        self.assertEqual(sort_str(["танцы", "музыка", "сон"], turning=True), ["музыка", "танцы", "сон"])
+        self.assertEqual(sort_str(["танцы", "музыка", "сон"], turning=False), ["сон", "танцы", "музыка"])
+
+if __name__ == "__main__":
+    unittest.main()
