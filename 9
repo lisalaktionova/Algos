@@ -1,0 +1,66 @@
+lets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+class Graph:
+    def __init__(self, size):
+        self.size = size
+        self.distances_matrix = [[0] * size for i in range(size)] # матрица смежности
+        self.vershins = [lets[i] for i in range(size)]
+
+    def set_line(self, v1, v2, w1, w2): # соединяем вершины v1 и v2 между собой
+        self.distances_matrix[v1][v2] = w1
+        self.distances_matrix[v1][v2] = w2
+
+    def get_path(self, predecessors, start, end): # получаем вершины из дейкстры и собираем путь
+        path = []
+        current = self.vershins.index(end)
+        while current is not None:
+            path.append(self.vershins[current])
+            current = predecessors[current]
+            if current == self.vershins.index(start):
+                path.append(start)
+                break
+        return path[::-1]
+
+    def deikstra(self, vershina):
+        start_ind = self.vershins.index(vershina)
+        distances = [float('inf')] * self.size # список расстояний до вершины
+        predecessors = [None] * self.size
+        distances[start_ind] = 0 # изначальная вершина
+        visited = [False] *self.size
+
+        for i in range(self.size):
+            min_distance = float('inf')
+            v = None # выбираем следующую вершину (вершина, для кот. вес минимальный)
+            for j in range(self.size):
+                if not visited[j] and distances[j] < min_distance:
+                    min_distance = distances[j]
+                    v = j
+
+            if v is None:
+                break
+            visited[v] = True
+
+            # отмечаем расстояние от этой врешины до соседей, если оно меньше раннее найденного
+            for j in range(self.size):
+                if self.distances_matrix[v][j] != 0 and not visited[j]:
+                    distance = distances[v] + self.distances_matrix[v][j]
+                    if distance < distances[j]:
+                        distances[j] = distance
+                        predecessors[j] = v
+        return distances, predecessors
+
+
+g = Graph(5)
+g.set_line(0, 1, 4, 4)
+g.set_line(0, 2, 0, 2)
+g.set_line(1, 3, 5, 5)
+g.set_line(2, 3, 3, 3)
+g.set_line(2, 4, 7, 5)
+g.set_line(3, 4, 3, 6)
+
+
+distances, predecessors = g.deikstra('A')
+print('Рассматриваемая вершина: A')
+for i in range(len(distances)):
+    path = '>'.join(g.get_path(predecessors, 'A', g.vershins[i]))
+    print(f'{path[-1]}: {path:<{g.size*2}} Расстояние: {distances[i]:<{5}}')
